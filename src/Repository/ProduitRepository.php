@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Produit;
+use App\Filter\ProductFilter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
@@ -47,6 +48,50 @@ class ProduitRepository extends ServiceEntityRepository
             $query,
             $page,
             $maxPerPage
+        );
+    }
+
+    public function findFilterListShop(ProductFilter $filter): PaginationInterface
+    {
+        $query = $this->createQueryBuilder('p')
+            ->andWhere('p.enable = :enable')
+            ->setParameter('enable', true)
+            ->join('p.taxe', 't')
+            ->leftJoin('p.categories', 'c');
+
+        if (!empty($filter->getQuery())) {
+            $query
+                ->andWhere('p.title LIKE :query')
+                ->setParameter('query', '%' . $filter->getQuery() . '%');
+        }
+
+        if ($filter->getMin()) {
+            $query
+                ->andWhere('p.priceHT * (1 + t.rate) >= :min')
+                ->setParameter('min', $filter->getMin());
+        }
+
+        if ($filter->getMax()) {
+            $query
+                ->andWhere('p.priceHT * (1 + t.rate) <= :max')
+                ->setParameter('max', $filter->getMax());
+        }
+
+        if (!empty($filter->getTags())) {
+            $query
+                ->andWhere('c.id IN (:tags)')
+                ->setParameter('tags', $filter->getTags());
+        }
+
+
+        $query
+            ->orderBy($filter->getSort(), $filter->getOrder())
+            ->getQuery();
+
+        return $this->paginator->paginate(
+            $query,
+            $filter->getPage(),
+            6,
         );
     }
 
