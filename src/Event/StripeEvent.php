@@ -2,6 +2,7 @@
 
 namespace App\Event;
 
+use Stripe\ApiResource;
 use Stripe\Event;
 use Stripe\ApiResource;
 use Symfony\Contracts\EventDispatcher\Event as BaseEvent;
@@ -30,7 +31,9 @@ class StripeEvent extends BaseEvent
      * Permet de récupérer l'objet transmis par stripe
      *
      * @return ApiResource
+     * @return ApiResource
      */
+    public function getResource(): ApiResource
     public function getResource(): ApiResource
     {
         return $this->event->data->object;

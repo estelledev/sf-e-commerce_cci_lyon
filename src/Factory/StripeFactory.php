@@ -12,6 +12,7 @@ use Stripe\Stripe;
 use Stripe\Webhook;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Webmozart\Assert\Assert;
 
 /**
@@ -102,6 +103,8 @@ class StripeFactory
         }
 
         $event = new StripeEvent($event);
+
+        $this->eventDispatcher->dispatch($event, $event->getName());
 
         $this->eventDispatcher->dispatch($event, $event->getName());
 
