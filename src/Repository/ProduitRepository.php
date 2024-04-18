@@ -51,7 +51,7 @@ class ProduitRepository extends ServiceEntityRepository
         );
     }
 
-    public function findFilterListShop(ProductFilter $filter): PaginationInterface
+    public function findFilterListShop(ProductFilter $filter): array
     {
         $query = $this->createQueryBuilder('p')
             ->andWhere('p.enable = :enable')
@@ -83,16 +83,25 @@ class ProduitRepository extends ServiceEntityRepository
                 ->setParameter('tags', $filter->getTags());
         }
 
-
         $query
             ->orderBy($filter->getSort(), $filter->getOrder())
             ->getQuery();
 
-        return $this->paginator->paginate(
+        $paginate = $this->paginator->paginate(
             $query,
             $filter->getPage(),
-            6,
+            6
         );
+
+        $subQuery = $query->select('MIN(p.priceHT * (1 + t.rate)) as min, MAX(p.priceHT * (1 + t.rate)) as max')
+            ->getQuery()
+            ->getScalarResult();
+
+        return [
+            'data' => $paginate,
+            'min' => (int) $subQuery[0]['min'],
+            'max' => (int) $subQuery[0]['max'],
+        ];
     }
 
     //    /**

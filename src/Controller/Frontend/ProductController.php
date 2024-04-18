@@ -37,8 +37,10 @@ class ProductController extends AbstractController
         $produits = $this->productRepo->findFilterListShop($productFilter);
 
         return $this->render('Frontend/Produits/index.html.twig', [
-            'produits' => ($produits),
+            'produits' => ($produits['data']),
             'form' => $form,
+            'min' => $produits['min'],
+            'max' => $produits['max'],
         ]);
     }
 
