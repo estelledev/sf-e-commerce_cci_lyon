@@ -46,11 +46,11 @@ class ProductFilterType extends AbstractType
                 'expanded' => true,
                 'multiple' => true,
                 'choice_label' => 'name',
-                'query_builder' => function(EntityRepository $er): QueryBuilder {
+                'query_builder' => function (EntityRepository $er): QueryBuilder {
                     return $er
-                    ->createQueryBuilder('c')
-                    ->andWhere('c.enable = true')
-                    ->orderBy('c.name','ASC');
+                        ->createQueryBuilder('c')
+                        ->andWhere('c.enable = true')
+                        ->orderBy('c.name', 'ASC');
                 },
             ]);
     }
@@ -61,6 +61,7 @@ class ProductFilterType extends AbstractType
             'data_class' => ProductFilter::class,
             'method' => 'GET',
             'csrf_protection' => false,
+            'validation_groups' => false,
         ]);
     }
 

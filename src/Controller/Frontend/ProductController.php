@@ -36,7 +36,7 @@ class ProductController extends AbstractController
         $form = $this->createForm(ProductFilterType::class, $productFilter);
         $form->handleRequest($request);
 
-        $produits = $this->productRepo->findFilterListShop($productFilter);
+        $produits = $this->productRepo->findFilterListShop($productFilter, 6);
 
         if ($request->query->get('ajax')) {
             return new JsonResponse([
@@ -50,6 +50,7 @@ class ProductController extends AbstractController
                 'count' => $this->renderView('Frontend/Produits/_count.html.twig', [
                     'produits' => $produits['data'],
                 ]),
+                'pages' => ceil($produits['data']->getTotalItemCount() / 6),
             ], 200);
         }
 
