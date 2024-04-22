@@ -1,28 +1,35 @@
 knp_gaufrette:
-    stream_wrapper: ~
+  stream_wrapper: ~
 
-    adapters:
-        product_adapter:
-            local:
-                directory: "%kernel.project_dir%/public/images/products"
+  adapters:
+    product_adapter:
+      local:
+        directory: "%kernel.project_dir%/public/images/products"
 
-    filesystems:
-        product_fs:
-            adapter: product_adapter
+  filesystems:
+    product_fs:
+      adapter: product_adapter
 
 vich_uploader:
-    db_driver: orm
-    storage: gaufrette
+  db_driver: orm
+  storage: gaufrette
 
-    metadata:
-        type: attribute
+  metadata:
+    type: attribute
 
-    mappings:
-        products:
-            uri_prefix: /images/products
-            upload_destination: product_fs
-            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+  mappings:
+    products:
+      uri_prefix: /images/products
+      upload_destination: product_fs
+      namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
 
-            inject_on_load: false
-            delete_on_remove: true
-            delete_on_update: true
+      inject_on_load: false
+      delete_on_remove: true
+      delete_on_update: true
+
+when@test:
+  knp_gaufrette:
+    adapters:
+      product_adapter:
+        local:
+          directory: "%kernel.cache_dir%/public/images/products"
